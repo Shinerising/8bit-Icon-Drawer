@@ -1,0 +1,491 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>8Bit Icon Drawer</title>
+    <script src="jquery-2.1.3.min.js"></script>
+    <style>
+        html {
+            font-family: Roboto Slab, sans-serif;
+        }
+        
+        body {
+            font-size: 3vh;
+            margin: none;
+        }
+        
+        #area {
+            width: 100%;
+            position: relative;
+        }
+        
+        #main {
+            width: 100vh;
+            height: 100vh;
+            margin: 0 auto;
+        }
+        
+        #bit_area {
+            width: 50vh;
+            height: 50vh;
+            float: left;
+        }
+        
+        #input_box {
+            width: 50vh;
+            height: 50vh;
+            float: left;
+        }
+        
+        #input_text {
+            font-family: monospace;
+            font-size: 3vh;
+            letter-spacing: 1.3vh;
+            line-height: 3vh;
+            width: 50vh;
+            height: 48vh;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        #color_panel {
+            width: 40vh;
+            height: 100vh;
+            float: right;
+            text-align: center;
+        }
+        
+        .cp_item {
+            width: 100%;
+            font-size: 2vh;
+            line-height: 4vh;
+            text-align: center;
+            margin: 2vh 0;
+        }
+        
+        .cp_item.colorSelect {
+            width: 49%;
+            display: inline-block;
+        }
+        
+        .sepline {
+            width: 100%;
+            border-bottom: .1vh solid gray;
+            margin-bottom: 1vh;
+        }
+        
+        .click_dot {
+            width: 4vh;
+            height: 4vh;
+            margin-left: 2vh;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            cursor: pointer;
+            box-shadow: 0 0 1vh rgba(0, 0, 0, .5) inset;
+        }
+        
+        .click_dot:hover {
+            box-shadow: 0 0 1vh rgba(0, 0, 0, .2) inset;
+        }
+        
+        .click_dot:active {
+            box-shadow: 0 0 1vh rgba(0, 0, 0, .9) inset;
+        }
+        
+        .active_dot {
+            box-shadow: 0 0 2vh rgba(0, 0, 0, .9);
+        }
+        
+        .bit_grid {
+            float: left;
+            width: 6.25%;
+            height: 6.25%;
+            cursor: pointer;
+            box-sizing: border-box;
+            border: .2vh solid #AAA;
+        }
+        
+        .no_border .bit_grid {
+            border: none;
+        }
+        
+        #cover {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, .6);
+        }
+        
+        #cover_container {
+            width: 70vh;
+            height: 75vh;
+            margin: 10vh auto;
+            background: #FFF;
+            box-shadow: 0 0 10vh rgba(100, 100, 100, .8);
+            text-align: center;
+            position: relative;
+        }
+        
+        #cover_container span {
+            display: inline-block;
+            margin-top: 2vh;
+        }
+        
+        #cover_bg{
+            width: 60vh;
+            height: 60vh;
+            margin-top: 5vh;
+            margin-bottom: -61vh;
+            display: inline-block;
+        }
+        
+        #cover_image {
+            width: 58vh;
+            height: 58vh;
+            border: 1vh solid #222;
+            display: inline-block;
+        }
+        
+        #btn_close {
+            position: absolute;
+            right: -2vh;
+            top: -2vh;
+            width: 4vh;
+            height: 4vh;
+            text-align: center;
+            font-size: 4vh;
+            line-height: 4vh;
+            background: linear-gradient(to bottom, #F99, #F88);
+            border: .2vh solid #F77;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        #btn_close:hover {
+            background: linear-gradient(to bottom, #F99, #F88);
+            border: .2vh solid #F99;
+        }
+        
+        #btn_close:active {
+            background: linear-gradient(to bottom, #F77, #F88);
+            border: .2vh solid #F77;
+        }
+        
+        .button {
+            display: inline-block;
+            font-size: 2vh;
+            line-height: 3vh;
+            background: linear-gradient(to bottom, #FFF, #EEE);
+            border: .2vh solid #AAA;
+            padding: .5vh 1vh;
+            border-radius: 2vh;
+            margin: 0 1vh;
+            cursor: pointer;
+        }
+        
+        .button:hover {
+            background: linear-gradient(to bottom, #FFF, #EEE);
+            border: .2vh solid #555;
+        }
+        
+        .button:active {
+            background: linear-gradient(to bottom, #DDD, #EEE);
+            border: .2vh solid #AAA;
+        }
+        
+        .cg {
+            background-color: #fff;
+            background-size: 20% 20%;
+            background-image: linear-gradient(0deg, transparent 45%, #AAA 45%, #AAA 55%, transparent 55%), linear-gradient(90deg, transparent 45%, #AAA 45%, #AAA 55%, transparent 55%);
+        }
+        
+        .ctm {
+            background-color: #fff;
+            background-size: 5% 5%;
+            background-image: linear-gradient(45deg, #EEE 25%, transparent 25%, transparent 75%, #EEE 75%, #EEE), linear-gradient(-45deg, #EEE 25%, transparent 25%, transparent 75%, #EEE 75%, #EEE);
+        }
+        
+        .c1m {
+            background: #FFF;
+        }
+        
+        .c2m {
+            background: #EEE;
+        }
+        
+        .ct {
+            background-color: #fff;
+            background-size: 40% 40%;
+            background-image: linear-gradient(45deg, #AAA 25%, transparent 25%, transparent 75%, #AAA 75%, #AAA), linear-gradient(-45deg, #AAA 25%, transparent 25%, transparent 75%, #AAA 75%, #AAA);
+        }
+        
+        .c0 {
+            background: transparent;
+        }
+        
+        .c1 {
+            background: #FFF;
+        }
+        
+        .c2 {
+            background: #AAA;
+        }
+        
+        .c3 {
+            background: #222;
+        }
+        
+        .c4 {
+            background: #F22;
+        }
+        
+        .c5 {
+            background: #6F6;
+        }
+        
+        .c6 {
+            background: #26F;
+        }
+        
+        .c7 {
+            background: #6FF;
+        }
+        
+        .c8 {
+            background: #F8F;
+        }
+        
+        .c9 {
+            background: #FE6;
+        }
+        
+        .ca {
+            background: #FA2;
+        }
+        
+        .cb {
+            background: #F2A;
+        }
+        
+        .cc {
+            background: #2A2;
+        }
+        
+        .cd {
+            background: #B86;
+        }
+        
+        .ce {
+            background: #FEB;
+        }
+        
+        .cf {
+            background: #62F;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="area">
+        <div id="main">
+            <div id="bit_area" oncontextmenu="return false;">
+            </div>
+            <div id="color_panel">
+                <div class="cp_item bgSelect"><span class="cp_text">Background:</span><span c="t" class="click_dot ct"></span><span c="1" class="click_dot c1"></span><span c="2" class="click_dot c2"></span>
+                </div>
+                <div class="cp_item gridEnable"><span class="cp_text">Show Grid:</span><span c="no" class="click_dot c1"></span><span c="yes" class="click_dot cg"></span>
+                </div>
+                <div class="sepline"></div>
+                <div class="cp_item colorSelect"><span class="cp_text">Color 0:</span><span c="0" class="click_dot c0"></span>
+                </div>
+                <div class="cp_item colorSelect"><span class="cp_text">Color 1:</span><span c="1" class="click_dot c1"></span>
+                </div>
+                <div class="cp_item colorSelect"><span class="cp_text">Color 2:</span><span c="2" class="click_dot c2"></span>
+                </div>
+                <div class="cp_item colorSelect"><span class="cp_text">Color 3:</span><span c="3" class="click_dot c3"></span>
+                </div>
+                <div class="cp_item colorSelect"><span class="cp_text">Color 4:</span><span c="4" class="click_dot c4"></span>
+                </div>
+                <div class="cp_item colorSelect"><span class="cp_text">Color 5:</span><span c="5" class="click_dot c5"></span>
+                </div>
+                <div class="cp_item colorSelect"><span class="cp_text">Color 6:</span><span c="6" class="click_dot c6"></span>
+                </div>
+                <div class="cp_item colorSelect"><span class="cp_text">Color 7:</span><span c="7" class="click_dot c7"></span>
+                </div>
+                <div class="cp_item colorSelect"><span class="cp_text">Color 8:</span><span c="8" class="click_dot c8"></span>
+                </div>
+                <div class="cp_item colorSelect"><span class="cp_text">Color 9:</span><span c="9" class="click_dot c9"></span>
+                </div>
+                <div class="cp_item colorSelect"><span class="cp_text">Color a:</span><span c="a" class="click_dot ca"></span>
+                </div>
+                <div class="cp_item colorSelect"><span class="cp_text">Color b:</span><span c="b" class="click_dot cb"></span>
+                </div>
+                <div class="cp_item colorSelect"><span class="cp_text">Color c:</span><span c="c" class="click_dot cc"></span>
+                </div>
+                <div class="cp_item colorSelect"><span class="cp_text">Color d:</span><span c="d" class="click_dot cd"></span>
+                </div>
+                <div class="cp_item colorSelect"><span class="cp_text">Color e:</span><span c="e" class="click_dot ce"></span>
+                </div>
+                <div class="cp_item colorSelect"><span class="cp_text">Color f:</span><span c="f" class="click_dot cf"></span>
+                </div>
+                <div class="sepline"></div>
+                <div class="button" id="btn_clear">Empty Canvas</div>
+                <div class="button" id="btn_generate">Generate Image</div>
+            </div>
+            <div id="input_box">
+                <textarea id="input_text"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div id="cover">
+        <div id="cover_container">
+            <div id="cover_bg" class="ctm"></div>
+            <img id="cover_image" title="8Bit Icon">
+            <span>Right Click Image to Save it!</span>
+            <div id="btn_close">×</div>
+        </div>
+    </div>
+
+
+
+    <script>
+        var currentColor = "0";
+        var currentBgc = "0";
+
+        $(document).ready(function () {
+            createIcon();
+            //refreshIcon(iconData[0]);
+            refreshText();
+
+            $('.bit_grid').on("mousedown", function (event) {
+                if (event.which == 3) {
+                    $(this).attr('class', 'bit_grid').addClass('c0').attr('c', 0);
+                    refreshText();
+                } else {
+                    $(this).attr('class', 'bit_grid').addClass('c' + currentColor).attr('c', currentColor);
+                    refreshText();
+                }
+            });
+            
+            $('#input_text').change(function() {
+                var c;
+                for(var i = 0; i < 256; i++) {
+                    c = $('#input_text').val().charAt(i);
+                    $('.bit_grid').eq(i).attr('class', 'bit_grid c' + c).attr('c', c)
+                }
+            });
+
+            $('.bgSelect .click_dot').click(function () {
+                $('.bgSelect .active_dot').removeClass('active_dot');
+                $(this).addClass('active_dot');
+                if ($(this).attr('c') == "t") {
+                    $('#bit_area').removeClass('ctm c1m c2m').addClass('ctm');
+                } else if ($(this).attr('c') == "1") {
+                    $('#bit_area').removeClass('ctm c1m c2m').addClass('c1m');
+                } else {
+                    $('#bit_area').removeClass('ctm c1m c2m').addClass('c2m');
+                }
+            });
+
+            $('.gridEnable .click_dot').click(function () {
+                $('.gridEnable .active_dot').removeClass('active_dot');
+                $(this).addClass('active_dot');
+                if ($(this).attr('c') == "yes") {
+                    $('#bit_area').removeClass('no_border');
+                } else {
+                    $('#bit_area').addClass('no_border');
+                }
+            });
+
+            $('.colorSelect .click_dot').click(function () {
+                $('.colorSelect .active_dot').removeClass('active_dot');
+                $(this).addClass('active_dot');
+                currentColor = $(this).attr('c');
+            });
+
+            $('#btn_generate').click(function () {
+                generateImg();
+                $('#cover').show();
+            });
+
+            $('#btn_close').click(function () {
+                $('#cover').hide();
+            });
+
+            $('#btn_clear').click(function () {
+                $('.bit_grid').attr('class', 'bit_grid c0').attr('c', '0');
+            });
+
+        });
+
+
+        function createIcon() {
+            for (var i = 0; i < 256; i++) {
+                $('<div c="0" class="bit_grid c0"></div>').appendTo($('#bit_area'));
+            }
+        }
+
+        function refreshText() {
+            var str = "";
+            for (var i = 0; i < 256; i++) {
+                str += $('.bit_grid').eq(i).attr("c");
+            }
+            $("#input_text").val(str);
+        }
+
+        function refreshIcon(str) {
+            for (var i = 0; str.charAt(i) != ''; i++) {
+                var c;
+                if (str.charAt(i) != '\n') {
+                    c = 'c' + str.charAt(i);
+                    $('.bit_grid').eq(i).attr('class', 'bit_grid').addClass(c);
+                }
+            }
+        }
+
+        function generateImg() {
+            var canvas = document.createElement("canvas");
+            canvas.width = 1024;
+            canvas.height = 1024;
+            var ctx = canvas.getContext("2d");
+            var c = 0;
+            var x, y;
+            for (var i = 0; i < 256; i++) {
+                c = parseInt($('.bit_grid').eq(i).attr('c'), 16);
+                if (c != 0) {
+                    ctx.fillStyle = colorData[c];
+                    y = parseInt(i / 16) * 64;
+                    x = (i % 16) * 64;
+                    ctx.fillRect(x, y, 64, 64);
+                }
+            }
+
+            $('#cover_image').attr('src', canvas.toDataURL("image/png"));
+        }
+
+        var colorData = ["transparent",
+            "#FFF",
+            "#AAA",
+            "#222",
+            "#F22",
+            "#6F6",
+            "#26F",
+            "#6FF",
+            "#F8F",
+            "#FE6",
+            "#FA2",
+            "#F2A",
+            "#2A2",
+            "#B86",
+            "#FEB",
+            "#62F"];
+    </script>
+</body>
+
+</html>
