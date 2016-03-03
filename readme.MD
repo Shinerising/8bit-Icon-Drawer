@@ -1,9 +1,9 @@
 # 8bit Icon Drawer
-Create 8Bit Icon on Webpage! Just Click and Get it!
+Create 8Bit Icon on Webpage! Easy & Quickly!
 
 ## Features
-* Click to Draw dots and Right Click to Clear
-* 16 Colors for Drawing (Transparent included)
-* Multiple Preview Background
-* Use String to Save your Masterpiece
-* Generate PNG Image Quickly
+* Click grids to Draw, Right Click to Clear
+* 16 Colors to Choose (Transparent included)
+* Multiple Background for Preview
+* Save your Masterpiece by String
+* Generate & Download PNG Image
