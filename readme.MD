@@ -10,9 +10,11 @@ Create 8Bit Icon on Webpage! Easy & Quickly!
 
 ## Preview
 
-![8Bit Icon Preview](./images/Preview01.png)
-![8Bit Icon Preview](./images/Preview02.png)
-![8Bit Icon Preview](./images/Preview03.png)
+<img src="./images/Preview01.png" width="128">
+
+<img src="./images/Preview02.png" width="128">
+
+<img src="./images/Preview03.png" width="128">
 
 ## Donation
 
